@@ -7,7 +7,9 @@ var hostproxy = require('hostproxy')
   , net = require('net')
   , async = require('async')
   , getport = require('getport')
+  , once = require('once')
   , DuplexPassThrough = require('duplex-passthrough')
+  , noop = function () {}
   ;
 
 function Deployment (flip, test) {
@@ -46,8 +48,23 @@ Deployment.prototype.attach = function () {
 Deployment.prototype.detach = function () {
   self.removeListener('error', self.onActive)
 }
-Deployment.prototype.close = function () {
-  if (this.process) this.proccess.kill()
+Deployment.prototype.close = function (cb) {
+  if (!cb) cb = noop
+  cb = once(cb)
+  var self = this
+  if (self.process) {
+    self.process.on('exit', function (code) {
+      cb(null, code)
+    })
+    try { self.process.kill()}
+    catch(e) {
+      cb(null)
+    }
+  } else {
+    this.on('process', function () {
+      self.close(cb)
+    })
+  }
 }
 Deployment.prototype.outputProcess = function (process) {
   var self = this
@@ -75,6 +92,9 @@ function FlipOver (deploy, test) {
   })
   this.adminServer = http.createServer(this.adminListener)
   this.start()
+  process.on('exit', function () {
+    self.close()
+  })
 }
 util.inherits(FlipOver, events.EventEmitter)
 FlipOver.prototype.start = function () {
@@ -148,7 +168,6 @@ FlipOver.prototype.onHost = function (host, addHeader, address) {
 FlipOver.prototype.adminListener = function (req, resp) {
   // TODO admin interface.
 }
-
 FlipOver.prototype.listen = function (mainPort, adminPort, cb) {
   var self = this
   var parallel =
@@ -156,6 +175,16 @@ FlipOver.prototype.listen = function (mainPort, adminPort, cb) {
     , function (cb) { self.adminServer.listen(adminPort, cb) }
     ]
   async.parallel(parallel, cb)
+}
+FlipOver.prototype.close = function (cb) {
+  var parallel = []
+    , self = this
+    ;
+  if (this.active) parallel.push(function (cb) {self.active.close(cb)})
+  parallel.push(function (cb) {self.mainServer.close(cb)})
+  parallel.push(function (cb) {self.adminServer.close(cb)})
+  async.parallel(parallel, cb)
+  //TODO: handle inflights
 }
 
 module.exports = function (deploy, test) {
