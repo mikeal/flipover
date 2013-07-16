@@ -1,0 +1,37 @@
+{
+  "name": "flipover",
+  "version": "0.1.0",
+  "description": "TCP server and deployment system that flips from one deployment to another.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "hostproxy": "~0.1.0",
+    "node-uuid": "~1.4.0",
+    "async": "~0.2.9",
+    "getport": "~0.1.0"
+  },
+  "devDependencies": {
+    "okdone": "~0.3.0",
+    "request": "~2.22.0",
+    "childport": "~0.1.0"
+  },
+  "scripts": {
+    "test": "node tests/run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikeal/flipover"
+  },
+  "keywords": [
+    "deployment",
+    "flip",
+    "deploy"
+  ],
+  "author": "Mikeal Rogers <mikeal.rogers@gmail.com>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/mikeal/flipover/issues"
+  }
+}
