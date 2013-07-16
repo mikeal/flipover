@@ -1,6 +1,6 @@
 {
   "name": "flipover",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "TCP server and deployment system that flips from one deployment to another.",
   "main": "index.js",
   "directories": {
