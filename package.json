@@ -10,7 +10,8 @@
     "hostproxy": "~0.1.0",
     "node-uuid": "~1.4.0",
     "async": "~0.2.9",
-    "getport": "~0.1.0"
+    "getport": "~0.1.0",
+    "duplex-passthrough": "~1.0.1"
   },
   "devDependencies": {
     "okdone": "~0.3.0",
