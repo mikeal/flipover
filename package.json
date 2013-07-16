@@ -12,7 +12,8 @@
     "async": "~0.2.9",
     "getport": "~0.1.0",
     "duplex-passthrough": "~1.0.1",
-    "once": "~1.1.1"
+    "once": "~1.1.1",
+    "callback-stream": "~1.0.0"
   },
   "devDependencies": {
     "okdone": "~0.3.0",

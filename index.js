@@ -8,6 +8,7 @@ var hostproxy = require('hostproxy')
   , async = require('async')
   , getport = require('getport')
   , once = require('once')
+  , callbackStream = require('callback-stream')
   , DuplexPassThrough = require('duplex-passthrough')
   , noop = function () {}
   ;
@@ -154,7 +155,7 @@ FlipOver.prototype.goodDeploy = function (d) {
 }
 FlipOver.prototype.report = function () {}
 FlipOver.prototype.onHost = function (host, addHeader, address) {
-  // addHeader('x-forwarded-for', address.address)
+  addHeader('x-forwarded-for', address.address)
   var ret
   if (!this.active) {
     // buffer
@@ -166,8 +167,29 @@ FlipOver.prototype.onHost = function (host, addHeader, address) {
   return ret
 }
 FlipOver.prototype.adminListener = function (req, resp) {
+  var self = this
   // TODO admin interface.
+  if (req.url === '/github') {
+    callbackStream(req, function (e, data) {
+      var info
+        , str = Buffer.concat(data).toString()
+        ;
+      try {info = JSON.parse(str)}
+      catch(e) {
+        resp.statusCode = 500
+        resp.end(e.stack)
+      }
+      if (info) self.emit('github', info)
+    })
+  } else {
+    resp.statusCode = 404
+    resp.end()
+  }
 }
+FlipOver.prototype.redeploy = function () {
+  this.start()
+}
+
 FlipOver.prototype.listen = function (mainPort, adminPort, cb) {
   var self = this
   var parallel =
