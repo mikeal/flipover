@@ -8,6 +8,7 @@ var hostproxy = require('hostproxy')
   , async = require('async')
   , getport = require('getport')
   , once = require('once')
+  , qs = require('querystring')
   , callbackStream = require('callback-stream')
   , DuplexPassThrough = require('duplex-passthrough')
   , noop = function () {}
