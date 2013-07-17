@@ -170,7 +170,7 @@ FlipOver.prototype.adminListener = function (req, resp) {
   var self = this
   // TODO admin interface.
   if (req.url === '/github') {
-    callbackStream(req, function (e, data) {
+    var cbstream = callbackStream(function (e, data) {
       var info
         , str = Buffer.concat(data).toString()
         ;
@@ -181,6 +181,7 @@ FlipOver.prototype.adminListener = function (req, resp) {
       }
       if (info) self.emit('github', info)
     })
+    req.pipe(cbstream)
   } else {
     resp.statusCode = 404
     resp.end()
