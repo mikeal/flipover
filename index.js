@@ -174,8 +174,9 @@ FlipOver.prototype.adminListener = function (req, resp) {
       var info
         , str = Buffer.concat(data).toString()
         ;
-      try {info = JSON.parse(str)}
-      catch(e) {
+      try {
+        info = JSON.parse(qs.parse(str).payload)
+      } catch(e) {
         resp.statusCode = 500
         resp.end(e.stack)
       }
