@@ -180,6 +180,8 @@ FlipOver.prototype.adminListener = function (req, resp) {
         resp.end(e.stack)
       }
       if (info) self.emit('github', info)
+      resp.statusCode = 200
+      resp.end('ok')
     })
     req.pipe(cbstream)
   } else {
