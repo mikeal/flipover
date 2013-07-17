@@ -106,6 +106,7 @@ FlipOver.prototype.start = function () {
   var self = this
     , d = new Deployment(this, this.test)
     ;
+  d.on('error', self.emit.bind(self, 'deployFail', d))
   setImmediate(function () {
     d.emit('log', 'Looking for free port.')
 
