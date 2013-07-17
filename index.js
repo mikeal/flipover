@@ -46,6 +46,7 @@ Deployment.prototype.attach = function () {
     self.flip.emit('activeFail')
   }
   self.on('error', self.onActive)
+  self.process.on('exit', self.onActive)
 }
 Deployment.prototype.detach = function () {
   self.removeListener('error', self.onActive)
@@ -153,6 +154,7 @@ FlipOver.prototype.goodDeploy = function (d) {
     s.wrapStream(c)
   })
   this.pending = []
+  d.emit('active')
 }
 FlipOver.prototype.report = function () {}
 FlipOver.prototype.onHost = function (host, addHeader, address) {
