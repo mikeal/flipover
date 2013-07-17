@@ -49,7 +49,9 @@ Deployment.prototype.attach = function () {
   self.process.on('exit', self.onActive)
 }
 Deployment.prototype.detach = function () {
+  var self = this
   self.removeListener('error', self.onActive)
+  self.process.on('exit', self.onActive)
 }
 Deployment.prototype.close = function (cb) {
   if (!cb) cb = noop
