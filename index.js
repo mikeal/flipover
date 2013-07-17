@@ -91,7 +91,7 @@ function FlipOver (deploy, test) {
       self.start()
     })
   })
-  this.adminServer = http.createServer(this.adminListener)
+  this.adminServer = http.createServer(this.adminListener.bind(this))
   this.start()
   process.on('exit', function () {
     self.close()
