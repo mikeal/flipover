@@ -55,8 +55,10 @@ Deployment.prototype.attach = function () {
 }
 Deployment.prototype.detach = function () {
   var self = this
-  self.removeListener('error', self.onActive)
-  self.process.removeListener('exit', self.onActive)
+  if (self.onActive) {
+    self.removeListener('error', self.onActive)
+    self.process.removeListener('exit', self.onActive)
+  }
 }
 Deployment.prototype.close = function (cb) {
   this.detach()
@@ -241,9 +243,9 @@ FlipOver.prototype.close = function (cb) {
   //TODO: handle inflights
 }
 FlipOver.prototype.output = function () {
-  this.on('log', console.log)
+  this.on('log', console.log.bind(console))
   this.on('newDeploy', function (d) {
-    d.on('log', console.log)
+    d.on('log', console.log.bind(console  ))
   })
 }
 
