@@ -1,6 +1,5 @@
 var hostproxy = require('hostproxy')
-  , uuid = require('node-uuid')
-  , stream = require('stream')
+  , domain = require('domain')
   , util = require('util')
   , events = require('events')
   , http = require('http')
@@ -41,7 +40,7 @@ Deployment.prototype.testInterval = function (ms) {
     if (self.test) self.test(self, function (e) {
       if (e) self.emit('error', e)
     })
-  })
+  }, ms)
 }
 Deployment.prototype.attach = function () {
   var self = this
@@ -81,8 +80,8 @@ Deployment.prototype.close = function (cb) {
 }
 Deployment.prototype.outputProcess = function (process) {
   var self = this
-  process.stdout.on('data', function (chunk) {self.emit('log', 'child_process:stdout::', chunk.toString())})
-  process.stderr.on('data', function (chunk) {self.emit('log', 'child_process:stderr::', chunk.toString())})
+  // process.stdout.on('data', function (chunk) {self.emit('log', 'child_process:stdout::', chunk.toString())})
+  // process.stderr.on('data', function (chunk) {self.emit('log', 'child_process:stderr::', chunk.toString())})
 }
 Deployment.prototype.log = function () {
   if (arguments.length > 1) var msg = Array.prototype.join.call(arguments, ', ')
@@ -176,8 +175,14 @@ FlipOver.prototype.goodDeploy = function (d) {
   this.active = d
   this.inflight = null
   this.pending.forEach(function (s) {
-    var c = d.connect()
-    if (s.domain) s.domain.bind(c)
+    var dom = domain.create()
+      , c = d.connect()
+
+    dom.on('error', function (e) {
+      console.error(e)
+    })
+
+    dom.add(c)
     s.wrapStream(c)
   })
   this.pending = []
@@ -226,9 +231,25 @@ FlipOver.prototype.redeploy = function () {
 
 FlipOver.prototype.listen = function (mainPort, adminPort, cb) {
   var self = this
+    , dom = domain.create()
+
+  dom.on('error', function (e) {
+    console.error(e)
+  })
+
   var parallel =
-    [ function (cb) { self.mainServer.listen(mainPort, cb) }
-    , function (cb) { self.adminServer.listen(adminPort, cb) }
+    [ function (cb) {
+        self.mainServer.on('connection', function (socket) {
+          dom.add(socket)
+        })
+        self.mainServer.listen(mainPort, cb)
+      }
+    , function (cb) {
+        self.adminServer.on('connection', function (socket) {
+          dom.add(socket)
+        })
+        self.adminServer.listen(adminPort, cb)
+      }
     ]
   async.parallel(parallel, cb)
 }
