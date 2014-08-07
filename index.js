@@ -78,14 +78,14 @@ Deployment.prototype.close = function (cb) {
     })
   }
 }
-Deployment.prototype.outputProcess = function (process) {
-  var self = this
+Deployment.prototype.outputProcess = function () {
   // process.stdout.on('data', function (chunk) {self.emit('log', 'child_process:stdout::', chunk.toString())})
   // process.stderr.on('data', function (chunk) {self.emit('log', 'child_process:stderr::', chunk.toString())})
 }
 Deployment.prototype.log = function () {
-  if (arguments.length > 1) var msg = Array.prototype.join.call(arguments, ', ')
-  else var msg = arguments[0]
+  var msg
+  if (arguments.length > 1) msg = Array.prototype.join.call(arguments, ', ')
+  else msg = arguments[0]
   this.emit('log', msg)
 }
 Deployment.prototype.abort = function () {
@@ -167,7 +167,6 @@ FlipOver.prototype.start = function (trigger) {
   return d
 }
 FlipOver.prototype.goodDeploy = function (d) {
-  var self = this
   if (this.active) {
     this.active.close()
   }
