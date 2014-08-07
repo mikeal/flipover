@@ -188,8 +188,7 @@ FlipOver.prototype.goodDeploy = function (d) {
   d.emit('active')
 }
 FlipOver.prototype.report = function () {}
-FlipOver.prototype.onHost = function (host, addHeader, address) {
-  addHeader('x-forwarded-for', address.address)
+FlipOver.prototype.onHost = function () {
   var ret
   if (!this.active) {
     // buffer
