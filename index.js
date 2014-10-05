@@ -178,7 +178,10 @@ FlipOver.prototype.goodDeploy = function (d) {
       , c = d.connect()
 
     dom.on('error', function (e) {
-      console.error(e)
+      console.error('Error in flipover Deployment domain')
+      console.error('(The socket connecting to the Deployment has emitted an error)')
+      console.error(e.toString())
+      console.error(e.stack)
     })
 
     dom.add(c)
@@ -232,7 +235,10 @@ FlipOver.prototype.listen = function (mainPort, adminPort, cb) {
     , dom = domain.create()
 
   dom.on('error', function (e) {
-    console.error(e)
+    console.error('Error in flipover listen domain')
+    console.error('(The socket connecting to either the mainPort or adminPort has emitted an error)')
+    console.error(e.toString())
+    console.error(e.stack)
   })
 
   var parallel =
