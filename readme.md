@@ -1,5 +1,7 @@
 ### flipover
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mikeal/flipover.svg)](https://greenkeeper.io/)
+
 TCP server and deployment system that flips from one deployment to another.
 
 ```javascript
