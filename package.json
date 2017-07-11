@@ -9,15 +9,15 @@
   "dependencies": {
     "hostproxy": "~0.1.0",
     "node-uuid": "~1.4.0",
-    "async": "~0.2.9",
+    "async": "~2.5.0",
     "getport": "~0.1.0",
     "duplex-passthrough": "~1.0.1",
-    "once": "~1.1.1",
-    "callback-stream": "~1.0.0"
+    "once": "~1.4.0",
+    "callback-stream": "~1.1.0"
   },
   "devDependencies": {
     "okdone": "~0.3.0",
-    "request": "~2.22.0",
+    "request": "~2.81.0",
     "childport": "~0.1.0",
     "cleanup": "~0.3.0"
   },
